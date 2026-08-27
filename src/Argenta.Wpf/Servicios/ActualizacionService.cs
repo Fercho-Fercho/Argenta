@@ -42,11 +42,10 @@ public sealed class ActualizacionService(IConfiguration configuracion) : IActual
     /// <summary>
     /// Si <c>UrlFeed</c> apunta a un repo de GitHub, se usa <see cref="GithubSource"/>
     /// (necesario para que Velopack sepa buscar los "Releases" del repo en vez
-    /// de tratarlo como una carpeta HTTP con un feed plano). El repo del
-    /// proyecto es privado, así que hace falta un token con permiso de
-    /// lectura — se lee de <c>Actualizaciones:GithubToken</c> (vacío mientras
-    /// no exista ninguna versión publicada todavía). Cualquier otra URL se
-    /// trata como el feed HTTP simple de siempre.
+    /// de tratarlo como una carpeta HTTP con un feed plano). El repo es
+    /// público, así que <c>Actualizaciones:GithubToken</c> puede quedar vacío;
+    /// solo hace falta llenarlo si el repo vuelve a ponerse privado. Cualquier
+    /// otra URL se trata como el feed HTTP simple de siempre.
     /// </summary>
     private IUpdateSource CrearFuente(string urlFeed)
     {
