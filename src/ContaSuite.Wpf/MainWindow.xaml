@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="ContaSuite — Suite Contable" Height="780" Width="1300" WindowStartupLocation="CenterScreen"
+        Icon="Assets/icono.ico"
         Background="{DynamicResource ContenidoFondoBrush}" Foreground="{DynamicResource TextoPrimarioBrush}">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolAVisibilidad"/>
