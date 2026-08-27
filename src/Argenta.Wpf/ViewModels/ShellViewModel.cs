@@ -49,6 +49,9 @@ public partial class ShellViewModel : ObservableObject
 
     public string ToolTipTema => TemaActual == TemaApp.Oscuro ? "Cambiar a modo claro" : "Cambiar a modo oscuro";
 
+    /// <summary>Versión mostrada en el sidebar (toma el <c>&lt;Version&gt;</c> del .csproj); se actualiza sola en cada release.</summary>
+    public string VersionTexto => $"v{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
+
     public ShellViewModel(
         IServiceProvider servicios, IEnumerable<IModuloContable> modulos, IActualizacionService actualizaciones,
         ITemaService temaService, IPreferenciasService preferenciasService)
@@ -92,9 +95,18 @@ public partial class ShellViewModel : ObservableObject
 
         ElementosAyuda.Add(new ElementoMenu("Buscar actualizaciones", BuscarActualizacionesAsync));
 
-        // Estado inicial: Catálogos expandido, mostrando Clientes.
-        padreCatalogos.EstaExpandido = true;
-        NavegarHijo(hijosCatalogos[0]);
+        // Estado inicial: Operaciones expandido, mostrando su primer elemento
+        // (con Catálogos como respaldo si todavía no hay módulos registrados).
+        if (hijosOperaciones.Count > 0)
+        {
+            padreOperaciones.EstaExpandido = true;
+            NavegarHijo(hijosOperaciones[0]);
+        }
+        else
+        {
+            padreCatalogos.EstaExpandido = true;
+            NavegarHijo(hijosCatalogos[0]);
+        }
     }
 
     [RelayCommand]
