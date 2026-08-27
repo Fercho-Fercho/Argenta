@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ContaSuite.Core/ContaSuite.Core.csproj" />
+    <Project Path="src/ContaSuite.Data/ContaSuite.Data.csproj" />
+    <Project Path="src/ContaSuite.Modules.LibroCompras/ContaSuite.Modules.LibroCompras.csproj" />
+    <Project Path="src/ContaSuite.Wpf/ContaSuite.Wpf.csproj" />
+  </Folder>
+</Solution>

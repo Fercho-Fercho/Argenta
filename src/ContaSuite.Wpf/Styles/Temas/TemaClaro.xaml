@@ -1,0 +1,72 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Tema claro (por defecto). Mismas claves que TemaOscuro.xaml: el resto
+         de la app referencia estos recursos por x:Key vía DynamicResource, así
+         que ITemaService puede intercambiar este archivo por el otro en tiempo
+         de ejecución sin reiniciar la app. No repartir colores sueltos por vista. -->
+
+    <!-- Sidebar (siempre oscuro, en los dos temas) -->
+    <Color x:Key="ColorSidebarFondo">#111827</Color>
+    <Color x:Key="ColorSidebarItemActivo">#2A3646</Color>
+    <SolidColorBrush x:Key="SidebarFondoBrush" Color="{StaticResource ColorSidebarFondo}"/>
+    <SolidColorBrush x:Key="SidebarTextoBrush" Color="#D1D5DB"/>
+    <SolidColorBrush x:Key="SidebarTextoActivoBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="SidebarItemActivoBrush" Color="{StaticResource ColorSidebarItemActivo}"/>
+    <SolidColorBrush x:Key="SidebarItemHoverBrush" Color="#1F2937"/>
+    <SolidColorBrush x:Key="SidebarSeparadorBrush" Color="#1F2937"/>
+
+    <!-- Topbar (degradado azul -> morado, igual en los dos temas) -->
+    <SolidColorBrush x:Key="TopbarAzulBrush" Color="#2563EB"/>
+    <SolidColorBrush x:Key="TopbarMoradoBrush" Color="#7C3AED"/>
+    <LinearGradientBrush x:Key="TopbarDegradadoBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#2563EB" Offset="0"/>
+        <GradientStop Color="#7C3AED" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Contenido -->
+    <SolidColorBrush x:Key="ContenidoFondoBrush" Color="#F3F4F6"/>
+    <SolidColorBrush x:Key="TarjetaFondoBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="BordeSuaveBrush" Color="#E5E7EB"/>
+
+    <!-- Texto -->
+    <SolidColorBrush x:Key="TextoPrimarioBrush" Color="#111827"/>
+    <SolidColorBrush x:Key="TextoSecundarioBrush" Color="#6B7280"/>
+
+    <!-- Acentos -->
+    <SolidColorBrush x:Key="AcentoBrush" Color="#2563EB"/>
+    <SolidColorBrush x:Key="AcentoHoverBrush" Color="#1D4ED8"/>
+    <SolidColorBrush x:Key="PeligroBrush" Color="#EF4444"/>
+    <SolidColorBrush x:Key="PeligroHoverBrush" Color="#DC2626"/>
+    <SolidColorBrush x:Key="ExitoBrush" Color="#16A34A"/>
+    <SolidColorBrush x:Key="AdvertenciaBrush" Color="#B26A00"/>
+
+    <!-- Tabla -->
+    <SolidColorBrush x:Key="EncabezadoTablaFondoBrush" Color="#F3F4F6"/>
+    <SolidColorBrush x:Key="FilaHoverBrush" Color="#EFF6FF"/>
+    <SolidColorBrush x:Key="FilaSeparadorBrush" Color="#E5E7EB"/>
+
+    <!-- Resaltados de revisión en el libro de compras: naranja = proveedor no
+         encontrado / marcado para revisar; amarillo = descuadre de IVA;
+         mitad-mitad = las dos cosas a la vez. Se reutilizan en la tabla de
+         vista previa, en la leyenda de colores y en el mismo hex del Excel de
+         salida (GeneradorLibroComprasXlsx.ColorRevision / ColorDescuadreIva:
+         esos SIEMPRE quedan en el tono claro, el Excel no tiene "tema"). -->
+    <SolidColorBrush x:Key="FilaRevisionBrush" Color="#FFC966"/>
+    <SolidColorBrush x:Key="FilaDescuadreIvaBrush" Color="#FFF59D"/>
+    <LinearGradientBrush x:Key="FilaMitadNaranjaAmarilloBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#FFC966" Offset="0.0"/>
+        <GradientStop Color="#FFC966" Offset="0.5"/>
+        <GradientStop Color="#FFF59D" Offset="0.5"/>
+        <GradientStop Color="#FFF59D" Offset="1.0"/>
+    </LinearGradientBrush>
+
+    <!-- Columna informativa "Cálculo de IVA" de la vista previa (no va al Excel) -->
+    <SolidColorBrush x:Key="ColumnaInformativaFondoBrush" Color="#E5E7EB"/>
+
+    <!-- Solo en la pestaña "Libro de Compras (XML)": rojo suave = proveedor
+         excluido automáticamente por el catálogo "Proveedores a revisar"
+         (acción ExcluirSiempre). Nunca va al Excel. -->
+    <SolidColorBrush x:Key="FilaExcluidaCatalogoBrush" Color="#FEE2E2"/>
+
+</ResourceDictionary>

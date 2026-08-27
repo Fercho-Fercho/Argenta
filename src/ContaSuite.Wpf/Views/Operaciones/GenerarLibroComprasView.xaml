@@ -1,0 +1,199 @@
+<UserControl x:Class="ContaSuite.Wpf.Views.Operaciones.GenerarLibroComprasView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="clr-namespace:ContaSuite.Wpf.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="760" d:DesignWidth="1200"
+             Foreground="{DynamicResource TextoPrimarioBrush}">
+    <UserControl.Resources>
+        <conv:SeveridadAColorConverter x:Key="SeveridadAColorConverter"/>
+        <conv:NuloOVacioAVisibilidadConverter x:Key="NuloOVacioAVisibilidadConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolAVisibilidad"/>
+    </UserControl.Resources>
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Generar libro de compras" FontSize="20" FontWeight="Bold"/>
+            <Button Grid.Column="1" Content="Info" Command="{Binding MostrarInfoColoresCommand}"
+                    Style="{StaticResource BotonSecundarioStyle}" HorizontalAlignment="Right" VerticalAlignment="Top"
+                    ToolTip="¿Qué significan los colores?"/>
+        </Grid>
+
+        <!-- Cliente detectado: solo lectura, nunca seleccionable (Función 4) -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,4">
+            <TextBlock Text="Cliente:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+            <Border Background="{DynamicResource ContenidoFondoBrush}" BorderBrush="{DynamicResource BordeSuaveBrush}" BorderThickness="1"
+                    CornerRadius="6" Padding="10,8" MinWidth="320" VerticalAlignment="Center">
+                <TextBlock Text="{Binding ClienteTextoMostrado}" TextTrimming="CharacterEllipsis"
+                           IsHitTestVisible="False"/>
+            </Border>
+            <Button Content="+ Agregar cliente al catálogo" Command="{Binding AgregarClienteDetectadoCommand}"
+                    Style="{StaticResource BotonSecundarioStyle}" Margin="12,0,0,0"
+                    Visibility="{Binding ClienteNoRegistrado, Converter={StaticResource BoolAVisibilidad}}"/>
+        </StackPanel>
+
+        <TextBlock Grid.Row="2" Text="{Binding ClienteAdvertencia}" Foreground="{DynamicResource AdvertenciaBrush}"
+                   TextWrapping="Wrap" Margin="0,0,0,8" FontSize="12"
+                   Visibility="{Binding ClienteAdvertencia, Converter={StaticResource NuloOVacioAVisibilidadConverter}}"/>
+
+        <!-- Archivo -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,4">
+            <Button Content="1. Seleccionar Excel de la SAT (.xls)..." Command="{Binding SeleccionarArchivoCommand}"
+                    Style="{StaticResource BotonPrimarioStyle}" Margin="0,0,8,0"/>
+            <Button Content="Limpiar" Command="{Binding LimpiarCommand}" Style="{StaticResource BotonSecundarioStyle}"/>
+        </StackPanel>
+
+        <TextBlock Grid.Row="4" Text="{Binding RutaArchivo, StringFormat='Archivo: {0}'}" Margin="0,0,0,4" FontStyle="Italic"/>
+
+        <!-- Validar / advertencias / generar / contador -->
+        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,4,0,8">
+            <Button Content="2. Validar de nuevo" Command="{Binding ValidarYClasificarCommand}"
+                    Style="{StaticResource BotonSecundarioStyle}" Margin="0,0,16,0"/>
+            <CheckBox Content="He revisado las advertencias y deseo continuar" IsChecked="{Binding AdvertenciasReconocidas}"
+                      Visibility="{Binding TieneAdvertencias, Converter={StaticResource BoolAVisibilidad}}"
+                      VerticalAlignment="Center" Margin="0,0,16,0"/>
+            <Button Content="3. Generar libro de compras (.xlsx)" Command="{Binding GenerarCommand}"
+                    Style="{StaticResource BotonPrimarioStyle}" Margin="0,0,16,0"/>
+            <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource TextoSecundarioBrush}">
+                <Run Text="Incluidas: "/>
+                <Run Text="{Binding FacturasIncluidas, Mode=OneWay}" FontWeight="SemiBold"/>
+                <Run Text=" / "/>
+                <Run Text="{Binding TotalFacturas, Mode=OneWay}" FontWeight="SemiBold"/>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- Contenido: hallazgos + vista previa + aparte CIVA/NABN -->
+        <Grid Grid.Row="6">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" MaxHeight="160"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" MaxHeight="180"/>
+            </Grid.RowDefinitions>
+
+            <ListBox Grid.Row="0" ItemsSource="{Binding Hallazgos}" Margin="0,0,0,8" Background="{DynamicResource TarjetaFondoBrush}" BorderBrush="{DynamicResource BordeSuaveBrush}"
+                      Visibility="{Binding Hallazgos.Count, Converter={x:Static conv:ContadorAVisibilidadConverter.Instancia}}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Mensaje}" TextWrapping="Wrap"
+                                   Foreground="{Binding Severidad, Converter={StaticResource SeveridadAColorConverter}}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <DataGrid Grid.Row="1" ItemsSource="{Binding Filas}" AutoGenerateColumns="False" IsReadOnly="False"
+                      CanUserAddRows="False" CanUserSortColumns="True"
+                      SelectionUnit="Cell" SelectionMode="Extended" ClipboardCopyMode="ExcludeHeader"
+                      ColumnHeaderStyle="{StaticResource EncabezadoTablaStyle}" CellStyle="{StaticResource CeldaTablaStyle}"
+                      Background="{DynamicResource TarjetaFondoBrush}" BorderBrush="{DynamicResource BordeSuaveBrush}"
+                      BorderThickness="1">
+                <DataGrid.RowStyle>
+                    <!-- El fondo base se pone como Setter (no como DataGrid.RowBackground/
+                         AlternatingRowBackground): esas dos propiedades el DataGrid las aplica
+                         con SetValue directo sobre cada fila, que tiene MÁS prioridad que un
+                         DataTrigger de este mismo Style y por eso pisaba silenciosamente los
+                         colores de clasificación (naranja/amarillo). -->
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="{DynamicResource TarjetaFondoBrush}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ProveedorNoEncontrado}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource FilaRevisionBrush}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding DescuadreIva}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource FilaDescuadreIvaBrush}"/>
+                            </DataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding ProveedorNoEncontrado}" Value="True"/>
+                                    <Condition Binding="{Binding DescuadreIva}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" Value="{DynamicResource FilaMitadNaranjaAmarilloBrush}"/>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <!-- CheckBox directo en la celda (no DataGridCheckBoxColumn): así responde
+                         al primer clic. DataGridCheckBoxColumn necesita un clic para seleccionar
+                         la celda y un segundo clic para marcarla, porque pasa por el modo de
+                         edición de la celda; un CheckBox interactivo dentro de la plantilla no. -->
+                    <DataGridTemplateColumn Header="Incluir" Width="0.6*" SortMemberPath="Incluida">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Incluida, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="No." Binding="{Binding Numero}" Width="0.5*" IsReadOnly="True" SortMemberPath="Numero"/>
+                    <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="0.8*" IsReadOnly="True" SortMemberPath="Fecha"/>
+                    <DataGridTextColumn Header="Docto" Binding="{Binding Docto}" Width="0.6*" IsReadOnly="True" SortMemberPath="Docto"/>
+                    <DataGridTextColumn Header="Serie" Binding="{Binding Serie}" Width="1*" IsReadOnly="True" SortMemberPath="Serie"/>
+                    <DataGridTextColumn Header="No. Doc" Binding="{Binding NoDoc}" Width="1*" IsReadOnly="True" SortMemberPath="NoDoc"/>
+                    <DataGridTextColumn Header="Nit" Binding="{Binding Nit}" Width="0.8*" IsReadOnly="True" SortMemberPath="Nit"/>
+                    <DataGridTextColumn Header="Proveedor" Binding="{Binding Proveedor}" Width="2.2*" IsReadOnly="True" SortMemberPath="Proveedor"/>
+                    <DataGridTextColumn Header="Compras" Binding="{Binding Compras, StringFormat=N2}" Width="0.9*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Servicios" Binding="{Binding Servicios, StringFormat=N2}" Width="0.9*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Exento" Binding="{Binding Exento, StringFormat=N2}" Width="0.9*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Iva" Binding="{Binding Iva, StringFormat=N2}" Width="0.9*" IsReadOnly="True"/>
+
+                    <!-- Columna informativa (Función 1.5): NO se exporta al Excel de salida -->
+                    <DataGridTextColumn Header="Cálculo de IVA" Binding="{Binding CalculoIva, StringFormat=N2}" Width="1*" IsReadOnly="True">
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource EncabezadoTablaStyle}">
+                                <Setter Property="Background" Value="{DynamicResource ColumnaInformativaFondoBrush}"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell" BasedOn="{StaticResource CeldaTablaStyle}">
+                                <Setter Property="Background" Value="{DynamicResource ColumnaInformativaFondoBrush}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+
+                    <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=N2}" Width="0.9*" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Facturas tipo CIVA / NABN: van aparte del libro (no afectan totales ni correlativo principal) -->
+            <StackPanel Grid.Row="2" Margin="0,12,0,0"
+                        Visibility="{Binding FilasAparte.Count, Converter={x:Static conv:ContadorAVisibilidadConverter.Instancia}}">
+                <TextBlock Text="Facturas aparte (CIVA / NABN) — no afectan el libro de compras" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <DataGrid ItemsSource="{Binding FilasAparte}" AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserAddRows="False" CanUserSortColumns="True" MaxHeight="160"
+                          SelectionUnit="Cell" SelectionMode="Extended" ClipboardCopyMode="ExcludeHeader"
+                          ColumnHeaderStyle="{StaticResource EncabezadoTablaStyle}" CellStyle="{StaticResource CeldaTablaStyle}"
+                          RowStyle="{StaticResource FilaTablaStyle}"
+                          Background="{DynamicResource TarjetaFondoBrush}" BorderBrush="{DynamicResource BordeSuaveBrush}"
+                          BorderThickness="1">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="0.8*" SortMemberPath="Fecha"/>
+                        <DataGridTextColumn Header="Docto" Binding="{Binding Docto}" Width="0.6*" SortMemberPath="Docto"/>
+                        <DataGridTextColumn Header="Serie" Binding="{Binding Serie}" Width="1*" SortMemberPath="Serie"/>
+                        <DataGridTextColumn Header="No. Doc" Binding="{Binding NoDoc}" Width="1*" SortMemberPath="NoDoc"/>
+                        <DataGridTextColumn Header="Nit" Binding="{Binding Nit}" Width="0.8*" SortMemberPath="Nit"/>
+                        <DataGridTextColumn Header="Proveedor" Binding="{Binding Proveedor}" Width="2.2*" SortMemberPath="Proveedor"/>
+                        <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=N2}" Width="0.9*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Grid>
+
+        <TextBlock Grid.Row="7" Text="{Binding MensajeEstado}" Margin="0,8,0,0" TextWrapping="Wrap" FontWeight="SemiBold"/>
+    </Grid>
+</UserControl>

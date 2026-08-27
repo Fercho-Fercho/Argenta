@@ -1,0 +1,50 @@
+<UserControl x:Class="ContaSuite.Wpf.Views.Configuraciones.DatosView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="clr-namespace:ContaSuite.Wpf.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800"
+             Foreground="{DynamicResource TextoPrimarioBrush}">
+    <UserControl.Resources>
+        <conv:NuloOVacioAVisibilidadConverter x:Key="NuloOVacioAVisibilidadConverter"/>
+    </UserControl.Resources>
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Configuraciones" FontSize="20" FontWeight="Bold" Margin="0,0,0,16"/>
+
+        <TextBlock Grid.Row="1" Text="DATOS" FontSize="12" FontWeight="Bold"
+                   Foreground="{DynamicResource TextoSecundarioBrush}" Margin="0,0,0,8"/>
+
+        <Border Grid.Row="2" Background="{DynamicResource TarjetaFondoBrush}" BorderBrush="{DynamicResource BordeSuaveBrush}"
+                BorderThickness="1" CornerRadius="8" Padding="20">
+            <StackPanel>
+                <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource TextoSecundarioBrush}" Margin="0,0,0,16">
+                    Por privacidad, ContaSuite no puede exportar los datos reales de un cliente. Solo puede
+                    <Run FontWeight="SemiBold" Foreground="{DynamicResource TextoPrimarioBrush}">importar</Run> un archivo de datos,
+                    o descargar una <Run FontWeight="SemiBold" Foreground="{DynamicResource TextoPrimarioBrush}">plantilla vacía</Run>
+                    para llenarla a mano. Así nadie puede extraer la información real de un cliente desde la aplicación.
+                </TextBlock>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Importar datos..." Command="{Binding ImportarDatosCommand}"
+                            Style="{StaticResource BotonPrimarioStyle}" Margin="0,0,12,0"
+                            ToolTip="Carga clientes, proveedores, tipos de cambio y memoria de selección desde un .json"/>
+                    <Button Content="Descargar plantilla vacía..." Command="{Binding DescargarPlantillaCommand}"
+                            Style="{StaticResource BotonSecundarioStyle}"
+                            ToolTip="Guarda un .json con la estructura de las tablas, sin datos reales"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <TextBlock Grid.Row="3" Text="{Binding MensajeEstado}" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,16,0,0"
+                   Visibility="{Binding MensajeEstado, Converter={StaticResource NuloOVacioAVisibilidadConverter}}"/>
+    </Grid>
+</UserControl>

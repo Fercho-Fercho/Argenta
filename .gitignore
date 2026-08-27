@@ -1,0 +1,23 @@
+## .NET
+bin/
+obj/
+publish/
+Releases/
+*.user
+
+## Bases de datos locales (regla de privacidad: nunca versionar datos reales)
+*.db
+*.db-shm
+*.db-wal
+
+## Archivos de ejemplo con datos reales de clientes (NITs, nombres, facturas):
+## se usan localmente para probar, pero nunca deben subirse a ningún remoto.
+Docs/
+
+## Visual Studio / Rider
+.vs/
+.idea/
+*.suo
+
+## Velopack
+releases/

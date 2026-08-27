@@ -1,0 +1,69 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Tema oscuro. Mismas claves que TemaClaro.xaml (ver ese archivo para el
+         porqué del mecanismo). Los resaltados de fila (naranja/amarillo/rojo)
+         usan tonos más oscuros y desaturados que los del tema claro, para que
+         el texto claro de encima siga siendo legible — NO son los mismos
+         tonos pastel sobre fondo oscuro. -->
+
+    <!-- Sidebar (siempre oscuro, en los dos temas) -->
+    <Color x:Key="ColorSidebarFondo">#111827</Color>
+    <Color x:Key="ColorSidebarItemActivo">#2A3646</Color>
+    <SolidColorBrush x:Key="SidebarFondoBrush" Color="{StaticResource ColorSidebarFondo}"/>
+    <SolidColorBrush x:Key="SidebarTextoBrush" Color="#D1D5DB"/>
+    <SolidColorBrush x:Key="SidebarTextoActivoBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="SidebarItemActivoBrush" Color="{StaticResource ColorSidebarItemActivo}"/>
+    <SolidColorBrush x:Key="SidebarItemHoverBrush" Color="#1F2937"/>
+    <SolidColorBrush x:Key="SidebarSeparadorBrush" Color="#1F2937"/>
+
+    <!-- Topbar (degradado azul -> morado, igual en los dos temas) -->
+    <SolidColorBrush x:Key="TopbarAzulBrush" Color="#2563EB"/>
+    <SolidColorBrush x:Key="TopbarMoradoBrush" Color="#7C3AED"/>
+    <LinearGradientBrush x:Key="TopbarDegradadoBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#2563EB" Offset="0"/>
+        <GradientStop Color="#7C3AED" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Contenido -->
+    <SolidColorBrush x:Key="ContenidoFondoBrush" Color="#0F172A"/>
+    <SolidColorBrush x:Key="TarjetaFondoBrush" Color="#1E293B"/>
+    <SolidColorBrush x:Key="BordeSuaveBrush" Color="#334155"/>
+
+    <!-- Texto -->
+    <SolidColorBrush x:Key="TextoPrimarioBrush" Color="#F1F5F9"/>
+    <SolidColorBrush x:Key="TextoSecundarioBrush" Color="#94A3B8"/>
+
+    <!-- Acentos (un poco más claros que en el tema claro, para que resalten sobre fondo oscuro) -->
+    <SolidColorBrush x:Key="AcentoBrush" Color="#3B82F6"/>
+    <SolidColorBrush x:Key="AcentoHoverBrush" Color="#60A5FA"/>
+    <SolidColorBrush x:Key="PeligroBrush" Color="#F87171"/>
+    <SolidColorBrush x:Key="PeligroHoverBrush" Color="#FCA5A5"/>
+    <SolidColorBrush x:Key="ExitoBrush" Color="#4ADE80"/>
+    <SolidColorBrush x:Key="AdvertenciaBrush" Color="#FBBF24"/>
+
+    <!-- Tabla -->
+    <SolidColorBrush x:Key="EncabezadoTablaFondoBrush" Color="#1E293B"/>
+    <SolidColorBrush x:Key="FilaHoverBrush" Color="#1C2A3F"/>
+    <SolidColorBrush x:Key="FilaSeparadorBrush" Color="#334155"/>
+
+    <!-- Resaltados de revisión: mismas claves que el tema claro, pero en
+         tonos oscuros/desaturados (no los pastel del tema claro) para que el
+         texto claro (TextoPrimarioBrush) encima siga siendo legible. -->
+    <SolidColorBrush x:Key="FilaRevisionBrush" Color="#7A4A12"/>
+    <SolidColorBrush x:Key="FilaDescuadreIvaBrush" Color="#73600A"/>
+    <LinearGradientBrush x:Key="FilaMitadNaranjaAmarilloBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#7A4A12" Offset="0.0"/>
+        <GradientStop Color="#7A4A12" Offset="0.5"/>
+        <GradientStop Color="#73600A" Offset="0.5"/>
+        <GradientStop Color="#73600A" Offset="1.0"/>
+    </LinearGradientBrush>
+
+    <!-- Columna informativa "Cálculo de IVA" de la vista previa (no va al Excel) -->
+    <SolidColorBrush x:Key="ColumnaInformativaFondoBrush" Color="#334155"/>
+
+    <!-- Solo en la pestaña "Libro de Compras (XML)": rojo suave = proveedor
+         excluido automáticamente por el catálogo "Proveedores a revisar". -->
+    <SolidColorBrush x:Key="FilaExcluidaCatalogoBrush" Color="#6B2020"/>
+
+</ResourceDictionary>
