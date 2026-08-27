@@ -1,0 +1,38 @@
+<Window x:Class="Argenta.Wpf.Views.Dialogos.FolioInicialDialogo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Folio inicial del PDF" Width="460" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" Background="{DynamicResource TarjetaFondoBrush}"
+        FontFamily="Segoe UI" Foreground="{DynamicResource TextoPrimarioBrush}">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Folio inicial" Style="{StaticResource TituloSeccionStyle}" FontSize="20" Margin="0,0,0,8"/>
+        <TextBlock Grid.Row="1" TextWrapping="Wrap" Margin="0,0,0,16" Foreground="{DynamicResource TextoSecundarioBrush}"
+                   Text="Indique con qué número de folio debe empezar la primera hoja del PDF. Si el libro necesita varias hojas, se numeran de forma correlativa a partir de este valor."/>
+
+        <ItemsControl Grid.Row="2" x:Name="ListaFilas">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="0,0,0,12">
+                        <TextBlock Text="{Binding Etiqueta}" Style="{StaticResource EtiquetaCampoStyle}"/>
+                        <TextBox Text="{Binding FolioTexto, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CampoFormularioStyle}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <TextBlock Grid.Row="3" x:Name="TxtError" Foreground="{DynamicResource PeligroBrush}" TextWrapping="Wrap" FontSize="12"/>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Cancelar" Style="{StaticResource BotonSecundarioStyle}" Click="Cancelar_Click" Margin="0,0,8,0"/>
+            <Button Content="Continuar" Style="{StaticResource BotonPrimarioStyle}" Click="Continuar_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

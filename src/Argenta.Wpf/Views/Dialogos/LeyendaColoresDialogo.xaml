@@ -1,0 +1,67 @@
+<Window x:Class="Argenta.Wpf.Views.Dialogos.LeyendaColoresDialogo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Significado de los colores" Width="440" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" Background="{DynamicResource TarjetaFondoBrush}"
+        FontFamily="Segoe UI" Foreground="{DynamicResource TextoPrimarioBrush}">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Significado de los colores" Style="{StaticResource TituloSeccionStyle}"
+                   FontSize="18" Margin="0,0,0,16"/>
+
+        <!-- Naranja -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,16" VerticalAlignment="Top">
+            <Border Width="28" Height="28" CornerRadius="4" Background="{DynamicResource FilaRevisionBrush}"
+                    BorderBrush="{DynamicResource BordeSuaveBrush}" BorderThickness="1" VerticalAlignment="Top"/>
+            <TextBlock Margin="12,0,0,0" TextWrapping="Wrap" MaxWidth="340">
+                <Run Text="Proveedor no encontrado" FontWeight="Bold"/>
+                <LineBreak/>
+                <Run Text="La factura se colocó en la columna de Compras por defecto; revisa y clasifica al proveedor en el catálogo."/>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- Amarillo -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,16" VerticalAlignment="Top">
+            <Border Width="28" Height="28" CornerRadius="4" Background="{DynamicResource FilaDescuadreIvaBrush}"
+                    BorderBrush="{DynamicResource BordeSuaveBrush}" BorderThickness="1" VerticalAlignment="Top"/>
+            <TextBlock Margin="12,0,0,0" TextWrapping="Wrap" MaxWidth="340">
+                <Run Text="Descuadre de IVA" FontWeight="Bold"/>
+                <LineBreak/>
+                <Run Text="El IVA calculado difiere en más de Q0.10 del IVA de la factura. Aplica solo a documentos FACT, FCAM y NCRE, y nunca a proveedores de gasolina. Revisa la factura."/>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- Mitad y mitad -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,16" VerticalAlignment="Top">
+            <Border Width="28" Height="28" CornerRadius="4" Background="{DynamicResource FilaMitadNaranjaAmarilloBrush}"
+                    BorderBrush="{DynamicResource BordeSuaveBrush}" BorderThickness="1" VerticalAlignment="Top"/>
+            <TextBlock Margin="12,0,0,0" TextWrapping="Wrap" MaxWidth="340">
+                <Run Text="Mitad naranja / mitad amarillo" FontWeight="Bold"/>
+                <LineBreak/>
+                <Run Text="La factura tiene ambos problemas a la vez: proveedor no encontrado y descuadre de IVA."/>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- Sin color -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,0,0,4" VerticalAlignment="Top">
+            <Border Width="28" Height="28" CornerRadius="4" Background="{DynamicResource TarjetaFondoBrush}"
+                    BorderBrush="{DynamicResource BordeSuaveBrush}" BorderThickness="1" VerticalAlignment="Top"/>
+            <TextBlock Margin="12,0,0,0" TextWrapping="Wrap" MaxWidth="340">
+                <Run Text="Sin color" FontWeight="Bold"/>
+                <LineBreak/>
+                <Run Text="Factura sin observaciones."/>
+            </TextBlock>
+        </StackPanel>
+
+        <Button Grid.Row="5" Content="Cerrar" Style="{StaticResource BotonPrimarioStyle}"
+                HorizontalAlignment="Right" Margin="0,16,0,0" Click="Cerrar_Click"/>
+    </Grid>
+</Window>

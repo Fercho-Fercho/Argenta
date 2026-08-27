@@ -1,4 +1,4 @@
-# ContaSuite
+# Argenta
 
 Suite de escritorio para Windows que apoya a contadores en Guatemala con tareas
 contables recurrentes. Crece por módulos: el primero es **Libro de Compras**
@@ -29,26 +29,26 @@ al terminar de generar cada reporte.
 ## Estructura de la solución
 
 ```
-ContaSuite.slnx
+Argenta.slnx
 src/
-  ContaSuite.Core/                  Contratos y utilidades compartidas (sin WPF ni EF)
-  ContaSuite.Data/                  EF Core + SQLite: entidades de catálogos, migraciones, semilla
-  ContaSuite.Modules.LibroCompras/  Lógica del módulo: parseo, clasificación, validaciones, generación .xlsx
-  ContaSuite.Wpf/                   Shell de navegación, vistas y ViewModels
+  Argenta.Core/                  Contratos y utilidades compartidas (sin WPF ni EF)
+  Argenta.Data/                  EF Core + SQLite: entidades de catálogos, migraciones, semilla
+  Argenta.Modules.LibroCompras/  Lógica del módulo: parseo, clasificación, validaciones, generación .xlsx
+  Argenta.Wpf/                   Shell de navegación, vistas y ViewModels
 Docs/Ejemplos/                      Archivos de ejemplo reales (Excel SAT, CSV Banguat, libro modelo)
 ```
 
-- **ContaSuite.Core**: interfaces base (`IModuloContable`), motor de
+- **Argenta.Core**: interfaces base (`IModuloContable`), motor de
   validaciones genérico, conversión de moneda, redondeo, normalización de NIT.
   No depende de WPF ni de EF Core.
-- **ContaSuite.Data**: `ContaSuiteDbContext`, entidades `Cliente`,
+- **Argenta.Data**: `ArgentaDbContext`, entidades `Cliente`,
   `Proveedor`, `TipoCambio`, repositorios, migraciones y semilla de datos
   (66 proveedores + un cliente de prueba).
-- **ContaSuite.Modules.LibroCompras**: lector del `.xls` de la SAT (NPOI),
+- **Argenta.Modules.LibroCompras**: lector del `.xls` de la SAT (NPOI),
   lector del CSV del Banguat (CsvHelper), motor de clasificación (orden de
   precedencia del libro de compras), reglas de validación del módulo y
   generador del `.xlsx` final (ClosedXML).
-- **ContaSuite.Wpf**: `MainWindow` (shell), `ShellViewModel` (arma el menú a
+- **Argenta.Wpf**: `MainWindow` (shell), `ShellViewModel` (arma el menú a
   partir de los módulos registrados por DI), vistas/ViewModels de Catálogos
   (Clientes, Proveedores, Tipo de Cambio) y de la operación "Generar libro de
   compras".
@@ -59,21 +59,21 @@ Requiere el SDK de .NET 8 (o superior, siempre que incluya el *runtime pack*
 de `net8.0-windows`).
 
 ```powershell
-dotnet build ContaSuite.slnx
+dotnet build Argenta.slnx
 ```
 
 ## Ejecutar
 
 ```powershell
-dotnet run --project src/ContaSuite.Wpf/ContaSuite.Wpf.csproj
+dotnet run --project src/Argenta.Wpf/Argenta.Wpf.csproj
 ```
 
 En el primer arranque:
 
-1. Se crea la base de datos SQLite en `%LOCALAPPDATA%\ContaSuite\contasuite.db`.
+1. Se crea la base de datos SQLite en `%LOCALAPPDATA%\Argenta\argenta.db`.
 2. Se aplican las migraciones de EF Core (con respaldo automático del archivo
    `.db` antes de migrar; si la migración falla, se restaura el respaldo — ver
-   `ContaSuite.Data/Servicios/RespaldoBaseDatosService.cs`).
+   `Argenta.Data/Servicios/RespaldoBaseDatosService.cs`).
 3. Se siembran los 66 proveedores conocidos y el cliente de prueba (Randall
    Manuel Lou Meda, NIT 468783-3).
 
@@ -103,17 +103,17 @@ redondeo ".5 hacia arriba"), la lógica de clasificación es correcta.
 1. Publique la app como *framework-dependent* o *self-contained*:
 
    ```powershell
-   dotnet publish src/ContaSuite.Wpf/ContaSuite.Wpf.csproj -c Release -r win-x64 --self-contained -o publish
+   dotnet publish src/Argenta.Wpf/Argenta.Wpf.csproj -c Release -r win-x64 --self-contained -o publish
    ```
 
 2. Empaquete el instalador con la herramienta `vpk` (`dotnet tool install -g vpk`):
 
    ```powershell
-   vpk pack --packId ContaSuite --packVersion 1.0.0 --packDir publish --mainExe ContaSuite.Wpf.exe
+   vpk pack --packId Argenta --packVersion 1.0.0 --packDir publish --mainExe Argenta.Wpf.exe
    ```
 
 3. Suba la carpeta de salida (`Releases/`) al servidor/feed configurado en
-   `src/ContaSuite.Wpf/appsettings.json` (`Actualizaciones:UrlFeed`).
+   `src/Argenta.Wpf/appsettings.json` (`Actualizaciones:UrlFeed`).
 
 4. Desde **Ayuda → Buscar actualizaciones**, la app detecta, descarga y aplica
    la nueva versión (`Velopack.UpdateManager`).
@@ -122,15 +122,15 @@ redondeo ".5 hacia arriba"), la lógica de clasificación es correcta.
 
 El shell nunca conoce los módulos de antemano: los descubre por inyección de
 dependencias a través de `IEnumerable<IModuloContable>`
-(`ContaSuite.Core.Modulos.IModuloContable`). Para agregar, por ejemplo, el
+(`Argenta.Core.Modulos.IModuloContable`). Para agregar, por ejemplo, el
 futuro **Libro de Ventas**, sin tocar el módulo de Compras ni el resto del
 shell:
 
-1. Cree el proyecto `ContaSuite.Modules.LibroVentas` (referencia a `Core` y
+1. Cree el proyecto `Argenta.Modules.LibroVentas` (referencia a `Core` y
    `Data`) con su propia lógica de negocio (parseo, clasificación,
    validaciones, generación del reporte), siguiendo el mismo patrón que
-   `ContaSuite.Modules.LibroCompras`.
-2. En `ContaSuite.Wpf`, agregue el ViewModel y la vista (XAML) de su(s)
+   `Argenta.Modules.LibroCompras`.
+2. En `Argenta.Wpf`, agregue el ViewModel y la vista (XAML) de su(s)
    operación(es), y una `DataTemplate` para esa vista en
    `Views/PlantillasVistas.xaml`.
 3. Implemente `IModuloContable` (por ejemplo `Modulos/LibroVentasModulo.cs`)
@@ -150,7 +150,7 @@ compartidos y reutilizables por el módulo nuevo a través de
 
 ## Datos semilla
 
-`ContaSuite.Data/Semilla/ProveedoresSemilla.cs` precarga 66 proveedores con su
+`Argenta.Data/Semilla/ProveedoresSemilla.cs` precarga 66 proveedores con su
 clasificación (Compra/Servicio) y la marca de gasolinera (solo UNO GUATEMALA,
 NIT 321052). `SembradorDatos.cs` además crea el cliente de prueba. La siembra
 es idempotente: solo inserta si el catálogo respectivo está vacío.

@@ -1,0 +1,55 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vmCat="clr-namespace:Argenta.Wpf.ViewModels.Catalogos"
+                    xmlns:vmOp="clr-namespace:Argenta.Wpf.ViewModels.Operaciones"
+                    xmlns:vmNav="clr-namespace:Argenta.Wpf.ViewModels.Navegacion"
+                    xmlns:vmConf="clr-namespace:Argenta.Wpf.ViewModels.Configuraciones"
+                    xmlns:vCat="clr-namespace:Argenta.Wpf.Views.Catalogos"
+                    xmlns:vOp="clr-namespace:Argenta.Wpf.Views.Operaciones"
+                    xmlns:vNav="clr-namespace:Argenta.Wpf.Views.Navegacion"
+                    xmlns:vConf="clr-namespace:Argenta.Wpf.Views.Configuraciones">
+
+    <!--
+        Plantillas ViewModel-primero: al asignar VistaActual (un ViewModel) al
+        ContentControl del shell, WPF elige automáticamente la vista según su
+        tipo. Un módulo nuevo agrega aquí su propia entrada, sin tocar las
+        de los módulos existentes.
+    -->
+
+    <DataTemplate DataType="{x:Type vmCat:ClientesViewModel}">
+        <vCat:ClientesView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vmCat:ProveedoresViewModel}">
+        <vCat:ProveedoresView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vmCat:ProveedoresRevisarViewModel}">
+        <vCat:ProveedoresRevisarView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vmCat:TiposCambioViewModel}">
+        <vCat:TiposCambioView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vmOp:GenerarLibroComprasViewModel}">
+        <vOp:GenerarLibroComprasView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vmOp:GenerarLibroComprasFelViewModel}">
+        <vOp:GenerarLibroComprasFelView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vmOp:GenerarLibroVentasFelViewModel}">
+        <vOp:GenerarLibroVentasFelView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vmNav:CatalogoLandingViewModel}">
+        <vNav:CatalogoLandingView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vmConf:DatosViewModel}">
+        <vConf:DatosView/>
+    </DataTemplate>
+
+</ResourceDictionary>

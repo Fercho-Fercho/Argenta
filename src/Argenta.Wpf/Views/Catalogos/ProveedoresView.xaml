@@ -1,0 +1,61 @@
+<UserControl x:Class="Argenta.Wpf.Views.Catalogos.ProveedoresView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="clr-namespace:Argenta.Wpf.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="500" d:DesignWidth="950"
+             Foreground="{DynamicResource TextoPrimarioBrush}">
+    <UserControl.Resources>
+        <conv:TipoProveedorATextoConverter x:Key="TipoProveedorATextoConverter"/>
+        <conv:CategoriaProveedorATextoConverter x:Key="CategoriaProveedorATextoConverter"/>
+    </UserControl.Resources>
+    <Grid Margin="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Encabezado: título + búsqueda + agregar -->
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Proveedores" Style="{StaticResource TituloSeccionStyle}" VerticalAlignment="Center"/>
+            <TextBox Grid.Column="1" Style="{StaticResource CampoBusquedaStyle}" VerticalAlignment="Center" Margin="0,0,12,0"
+                     Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Grid.Column="2" Content="+ Nuevo proveedor" Style="{StaticResource BotonAgregarStyle}"
+                    Command="{Binding AgregarCommand}"/>
+        </Grid>
+
+        <!-- Tabla -->
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Proveedores}" Style="{StaticResource EstiloDataGridStyle}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Nit" Binding="{Binding Nit}" Width="1.2*"/>
+                <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="3*"/>
+                <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo, Converter={StaticResource TipoProveedorATextoConverter}}" Width="1*"/>
+                <DataGridTextColumn Header="Categoría" Binding="{Binding Categoria, Converter={StaticResource CategoriaProveedorATextoConverter}}" Width="1.2*" IsReadOnly="True"/>
+                <DataGridTemplateColumn Header="Acción" Width="1.2*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Editar" Style="{StaticResource BotonAccionTablaStyle}"
+                                        Command="{Binding DataContext.EditarCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"/>
+                                <Button Content="Eliminar" Style="{StaticResource BotonAccionEliminarStyle}"
+                                        Command="{Binding DataContext.EliminarCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <TextBlock Grid.Row="2" Text="{Binding Mensaje}" Margin="0,12,0,0" Foreground="{DynamicResource ExitoBrush}"/>
+    </Grid>
+</UserControl>
