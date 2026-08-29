@@ -75,8 +75,60 @@ public sealed class ImportacionDatosService(IDbContextFactory<ArgentaDbContext> 
         return JsonSerializer.Serialize(plantilla, OpcionesJson);
     }
 
+    public async Task<string> ExportarAsync()
+    {
+        await using var db = await fabricaDb.CreateDbContextAsync();
+
+        var clientes = await db.Clientes.AsNoTracking().Include(c => c.Establecimientos)
+            .OrderBy(c => c.Nombre).ToListAsync();
+        var proveedores = await db.Proveedores.AsNoTracking().OrderBy(p => p.Nombre).ToListAsync();
+        var proveedoresRevisar = await db.ProveedoresRevisar.AsNoTracking().OrderBy(p => p.Nombre).ToListAsync();
+
+        var datos = new DatosArgentaJson
+        {
+            Version = 1,
+            Clientes = clientes.Select(c => new DatosClienteJson
+            {
+                Nit = c.Nit,
+                Nombre = c.Nombre,
+                Establecimientos = c.Establecimientos
+                    .OrderBy(e => e.Numero)
+                    .Select(e => new DatosEstablecimientoJson
+                    {
+                        Numero = e.Numero,
+                        Nombre = e.Nombre,
+                        Tipo = e.Tipo.ToString(),
+                        Exporta = e.Exporta,
+                    })
+                    .ToList(),
+            }).ToList(),
+            Proveedores = proveedores.Select(p => new DatosProveedorJson
+            {
+                Nit = p.Nit,
+                Nombre = p.Nombre,
+                Tipo = p.Tipo.ToString(),
+                Categoria = p.Categoria.ToString(),
+            }).ToList(),
+            ProveedoresRevisar = proveedoresRevisar.Select(p => new DatosProveedorRevisarJson
+            {
+                Nit = p.Nit,
+                Nombre = p.Nombre,
+                Accion = p.Accion.ToString(),
+            }).ToList(),
+            // Tipos de Cambio: no son catálogo propio del contador (son
+            // públicos, del Banguat) — código dejado listo arriba por si se
+            // decide agregarlos más adelante, pero no se exportan todavía.
+            TiposCambio = [],
+            // Memoria de selección de facturas: regla de privacidad no
+            // negociable de este servicio, nunca se exporta.
+            Selecciones = [],
+        };
+
+        return JsonSerializer.Serialize(datos, OpcionesJson);
+    }
+
     /// <summary>
-    /// Único método que toca la base de datos: cuenta lo que se insertaría/
+    /// Único método de importación que toca la base de datos: cuenta lo que se insertaría/
     /// actualizaría y, si <paramref name="aplicarCambios"/> es true, además
     /// lo guarda. Previsualizar e Importar comparten esta misma lógica para
     /// no arriesgarse a que el resumen mostrado no coincida con lo aplicado.

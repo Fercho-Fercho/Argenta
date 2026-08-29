@@ -1,11 +1,12 @@
 namespace Argenta.Data.Servicios;
 
 /// <summary>
-/// Importa catálogos (Clientes, Proveedores, Proveedores a revisar, Tipos de
-/// Cambio y la memoria de selección) desde un .json, y genera la plantilla
-/// vacía correspondiente. Por privacidad, este servicio NUNCA lee ni vuelca
-/// datos reales de la base a un archivo — solo importa hacia adentro, o
-/// entrega una plantilla en blanco. Ver <see cref="ImportacionDatosService"/>.
+/// Importa/exporta catálogos (Clientes, Proveedores, Proveedores a revisar)
+/// en el mismo formato .json en ambos sentidos, y genera la plantilla vacía
+/// correspondiente. Por privacidad, este servicio NUNCA lee ni vuelca
+/// información de facturas ni la memoria de selección (hashes de facturas
+/// incluidas/excluidas) — <see cref="ExportarAsync"/> solo entrega catálogo.
+/// Ver <see cref="ImportacionDatosService"/>.
 /// </summary>
 public interface IImportacionDatosService
 {
@@ -20,4 +21,14 @@ public interface IImportacionDatosService
 
     /// <summary>Arma el .json de la plantilla vacía (estructura + una fila de ejemplo marcada para borrar). Nunca toca la base de datos.</summary>
     string GenerarPlantillaVacia();
+
+    /// <summary>
+    /// Arma el .json con los catálogos actuales (Clientes + Establecimientos,
+    /// Proveedores, Proveedores a revisar), en el mismo formato que
+    /// <see cref="ImportarAsync"/> consume — lo exportado se puede volver a
+    /// importar sin cambios. Operación de solo lectura: no modifica la base
+    /// de datos. Tipos de Cambio y la memoria de selección siempre salen
+    /// vacíos (no son catálogo propio del contador / son datos de facturas).
+    /// </summary>
+    Task<string> ExportarAsync();
 }

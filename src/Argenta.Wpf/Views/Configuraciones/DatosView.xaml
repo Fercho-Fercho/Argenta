@@ -27,15 +27,22 @@
                 BorderThickness="1" CornerRadius="8" Padding="20">
             <StackPanel>
                 <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource TextoSecundarioBrush}" Margin="0,0,0,16">
-                    Por privacidad, Argenta no puede exportar los datos reales de un cliente. Solo puede
-                    <Run FontWeight="SemiBold" Foreground="{DynamicResource TextoPrimarioBrush}">importar</Run> un archivo de datos,
-                    o descargar una <Run FontWeight="SemiBold" Foreground="{DynamicResource TextoPrimarioBrush}">plantilla vacía</Run>
-                    para llenarla a mano. Así nadie puede extraer la información real de un cliente desde la aplicación.
+                    Por privacidad, Argenta nunca guarda ni exporta información de facturas (ni la memoria de
+                    facturas incluidas/excluidas). Sí puede
+                    <Run FontWeight="SemiBold" Foreground="{DynamicResource TextoPrimarioBrush}">exportar</Run> sus
+                    catálogos (Clientes, Proveedores, Proveedores a revisar) para respaldarlos o pasarlos a otra
+                    instalación, <Run FontWeight="SemiBold" Foreground="{DynamicResource TextoPrimarioBrush}">importar</Run>
+                    ese mismo archivo de vuelta, o descargar una
+                    <Run FontWeight="SemiBold" Foreground="{DynamicResource TextoPrimarioBrush}">plantilla vacía</Run>
+                    para llenarla a mano.
                 </TextBlock>
 
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Importar datos..." Command="{Binding ImportarDatosCommand}"
+                    <Button Content="Exportar data..." Command="{Binding ExportarDatosCommand}"
                             Style="{StaticResource BotonPrimarioStyle}" Margin="0,0,12,0"
+                            ToolTip="Guarda un .json con los catálogos actuales (Clientes, Proveedores, Proveedores a revisar)"/>
+                    <Button Content="Importar datos..." Command="{Binding ImportarDatosCommand}"
+                            Style="{StaticResource BotonSecundarioStyle}" Margin="0,0,12,0"
                             ToolTip="Carga clientes, proveedores, tipos de cambio y memoria de selección desde un .json"/>
                     <Button Content="Descargar plantilla vacía..." Command="{Binding DescargarPlantillaCommand}"
                             Style="{StaticResource BotonSecundarioStyle}"

@@ -79,6 +79,46 @@ public partial class DatosViewModel(IImportacionDatosService servicio) : Observa
     }
 
     [RelayCommand]
+    private async Task ExportarDatosAsync()
+    {
+        var dialogo = new SaveFileDialog
+        {
+            Filter = "Archivo de datos Argenta (*.json)|*.json",
+            FileName = "argenta_datos_export.json",
+        };
+        if (dialogo.ShowDialog() != true) return;
+
+        string json;
+        DatosArgentaJson datos;
+        try
+        {
+            json = await servicio.ExportarAsync();
+            datos = servicio.ParsearJson(json); // Mismo parser que "Importar": confirma que lo exportado se puede volver a leer.
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"No se pudo generar el archivo de exportación: {ex.Message}", "Argenta", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        try
+        {
+            await File.WriteAllTextAsync(dialogo.FileName, json);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"No se pudo guardar el archivo: {ex.Message}", "Argenta", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        var totalEstablecimientos = datos.Clientes.Sum(c => c.Establecimientos.Count);
+        MensajeEstado =
+            $"Exportación completada: {datos.Clientes.Count} clientes ({totalEstablecimientos} establecimientos), " +
+            $"{datos.Proveedores.Count} proveedores, {datos.ProveedoresRevisar.Count} proveedores a revisar. " +
+            $"Guardado en: {dialogo.FileName}";
+    }
+
+    [RelayCommand]
     private void DescargarPlantilla()
     {
         var dialogo = new SaveFileDialog
