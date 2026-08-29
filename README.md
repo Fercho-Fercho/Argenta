@@ -148,6 +148,81 @@ sin más cambios. Los catálogos de Clientes y Tipo de Cambio ya son
 compartidos y reutilizables por el módulo nuevo a través de
 `IClienteRepositorio` / `ITipoCambioRepositorio` / `IProveedorTipoCambio`.
 
+## Licencia por computadora autorizada
+
+Argenta solo funciona en computadoras que el desarrollador autorizó
+explícitamente. La validación corre en el arranque de la app (nunca en el
+instalador, que es fácil de burlar copiando archivos) y se implementa en
+`src/Argenta.Wpf/Servicios/Licencia/`:
+
+- **`FingerprintService`**: genera el código único de la computadora
+  combinando el `MachineGuid` de Windows (registro
+  `HKLM\SOFTWARE\Microsoft\Cryptography`) con el número de serie de la placa
+  base (WMI, opcional/mejor esfuerzo), y aplicando SHA-256. Es estable entre
+  reinicios y no reversible.
+- **`AutorizacionService`**: descarga `autorizadas.json` desde el repositorio
+  público **[Fercho-Fercho/argenta-licencias](https://github.com/Fercho-Fercho/argenta-licencias)**
+  (separado de este código fuente a propósito) usando la URL *raw* de GitHub,
+  sin token porque el repo es público. La URL vive en
+  `Licencia:UrlListaAutorizadas` de `appsettings.json`.
+- **`CacheLicenciaService`**: guarda la fecha de la última validación exitosa,
+  cifrada con DPAPI (`ProtectedData`, ligada al usuario de Windows de esta
+  máquina) en `%LocalAppData%\Argenta\Data\licencia.cache`. No es editable a
+  mano ni portable a otra computadora/usuario — es solo la caché que sostiene
+  el período de gracia offline, nunca la fuente de verdad.
+- **`ValidadorLicenciaService`**: combina todo lo anterior en un
+  `EstadoLicencia` (`Autorizada` / `EnGracia` / `Bloqueada`).
+
+### Cómo autorizar una computadora nueva
+
+1. El cliente abre Argenta; si su computadora no está autorizada, ve la
+   pantalla de bloqueo con su código y un botón para copiarlo.
+2. El cliente envía ese código al desarrollador (por el medio que sea).
+3. El desarrollador edita `autorizadas.json` en el repo
+   [`argenta-licencias`](https://github.com/Fercho-Fercho/argenta-licencias)
+   y agrega una entrada:
+
+   ```json
+   { "codigo": "<el código de 64 caracteres>", "cliente": "Nombre del contador", "activa": true }
+   ```
+
+4. El cliente presiona **"Reintentar validación"** (pantalla de bloqueo) o
+   **Ayuda → Licencia / Acerca de → "Validar ahora"** (si ya estaba dentro).
+   La app se desbloquea sola, sin reiniciar. No hace falta recompilar ni
+   publicar una versión nueva de Argenta.
+
+### Cómo revocar
+
+Cambie `"activa": true` a `"activa": false` (o quite la entrada por completo)
+y suba el cambio. En cuanto la app de ese cliente vuelva a validar (arranque
+o "Validar ahora"), se bloquea — la revocación explícita del servidor siempre
+gana, aunque hubiera período de gracia vigente.
+
+> **Nota:** `raw.githubusercontent.com` cachea el contenido unos minutos en su
+> CDN, así que un cambio recién subido puede tardar un rato en verse reflejado
+> la primera vez que se consulta.
+
+### Período de gracia offline
+
+Si la app no logra contactar `autorizadas.json` (sin internet, timeout, DNS,
+etc.), no bloquea de inmediato: revisa la fecha de la última validación
+exitosa guardada localmente y, si fue hace menos de `Licencia:DiasGracia` días
+(7 por defecto, configurable en `appsettings.json`), deja usar la app
+normalmente. Pasado ese plazo sin poder validar, bloquea hasta que haya
+conexión. Esto es distinto de una revocación explícita (`activa: false`), que
+siempre bloquea de inmediato en cuanto hay internet.
+
+### Nota de seguridad
+
+Este método alcanza para el caso de uso (evitar copiar la app entre usuarios
+y controlar altas/bajas de clientes de forma simple, sin recompilar). No es
+infalible ante un atacante experto — toda la lógica de validación viaja
+dentro de la app instalada, así que alguien con suficiente conocimiento
+técnico podría parchear el binario para saltársela. Para un producto en fase
+inicial vendido a contadores, es el mejor equilibrio entre seguridad real y
+facilidad de mantenimiento (agregar/quitar un cliente es editar una línea de
+JSON, no publicar una versión nueva).
+
 ## Datos semilla
 
 `Argenta.Data/Semilla/ProveedoresSemilla.cs` precarga 66 proveedores con su

@@ -1,4 +1,5 @@
 using System.IO;
+using System.Net.Http;
 using System.Windows;
 using Argenta.Core.Modulos;
 using Argenta.Data;
@@ -7,6 +8,7 @@ using Argenta.Data.Servicios;
 using Argenta.Modules.LibroCompras.DependencyInjection;
 using Argenta.Wpf.Modulos;
 using Argenta.Wpf.Servicios;
+using Argenta.Wpf.Servicios.Licencia;
 using Argenta.Wpf.ViewModels;
 using Argenta.Wpf.ViewModels.Catalogos;
 using Argenta.Wpf.ViewModels.Configuraciones;
@@ -57,6 +59,26 @@ public partial class App : Application
         var preferencias = Servicios.GetRequiredService<IPreferenciasService>().Cargar();
         Servicios.GetRequiredService<ITemaService>().AplicarTema(preferencias.Tema);
 
+        // Validación de licencia: corre ANTES de mostrar el shell (ShellViewModel
+        // lee ILicenciaEstadoActual.Actual de forma síncrona en su constructor,
+        // así que ya debe estar calculado en este punto). Ver README, sección
+        // "Licencia por computadora autorizada".
+        var estadoLicencia = Servicios.GetRequiredService<ILicenciaEstadoActual>();
+        try
+        {
+            estadoLicencia.Actual = Servicios.GetRequiredService<IValidadorLicenciaService>()
+                .ValidarAsync().GetAwaiter().GetResult();
+        }
+        catch (Exception ex)
+        {
+            // ValidadorLicenciaService ya atrapa sus propios errores de red;
+            // si algo inesperado revienta aquí de todos modos, no debe tronar
+            // el arranque — se trata como bloqueada para no dejar pasar
+            // módulos sin haber podido validar.
+            estadoLicencia.Actual = new ResultadoLicencia(
+                EstadoLicencia.Bloqueada, "desconocido", null, $"No se pudo validar la licencia: {ex.Message}");
+        }
+
         var ventanaPrincipal = new MainWindow
         {
             DataContext = Servicios.GetRequiredService<ShellViewModel>(),
@@ -82,6 +104,14 @@ public partial class App : Application
         servicios.AddSingleton<IActualizacionService, ActualizacionService>();
         servicios.AddSingleton<IPreferenciasService, PreferenciasService>();
         servicios.AddSingleton<ITemaService, TemaService>();
+
+        // Licencia por computadora autorizada (ver README).
+        servicios.AddSingleton(new HttpClient { Timeout = TimeSpan.FromSeconds(6) });
+        servicios.AddSingleton<IFingerprintService, FingerprintService>();
+        servicios.AddSingleton<IAutorizacionService, AutorizacionService>();
+        servicios.AddSingleton<ICacheLicenciaService, CacheLicenciaService>();
+        servicios.AddSingleton<IValidadorLicenciaService, ValidadorLicenciaService>();
+        servicios.AddSingleton<ILicenciaEstadoActual, LicenciaEstadoActual>();
 
         // ViewModels.
         servicios.AddTransient<ShellViewModel>();

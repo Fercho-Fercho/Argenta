@@ -7,7 +7,9 @@
                     xmlns:vCat="clr-namespace:Argenta.Wpf.Views.Catalogos"
                     xmlns:vOp="clr-namespace:Argenta.Wpf.Views.Operaciones"
                     xmlns:vNav="clr-namespace:Argenta.Wpf.Views.Navegacion"
-                    xmlns:vConf="clr-namespace:Argenta.Wpf.Views.Configuraciones">
+                    xmlns:vConf="clr-namespace:Argenta.Wpf.Views.Configuraciones"
+                    xmlns:vmLic="clr-namespace:Argenta.Wpf.ViewModels.Licencia"
+                    xmlns:vLic="clr-namespace:Argenta.Wpf.Views.Licencia">
 
     <!--
         Plantillas ViewModel-primero: al asignar VistaActual (un ViewModel) al
@@ -50,6 +52,14 @@
 
     <DataTemplate DataType="{x:Type vmConf:DatosViewModel}">
         <vConf:DatosView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vmLic:BloqueoViewModel}">
+        <vLic:BloqueoView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vmLic:LicenciaViewModel}">
+        <vLic:LicenciaView/>
     </DataTemplate>
 
 </ResourceDictionary>
