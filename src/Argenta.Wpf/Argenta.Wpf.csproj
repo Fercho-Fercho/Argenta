@@ -28,7 +28,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assets\icono.ico</ApplicationIcon>
     <!-- Debe subir en cada release junto con el packVersion de "vpk pack": es lo que se muestra en el sidebar. -->
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
