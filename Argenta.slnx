@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Argenta.Core/Argenta.Core.csproj" />
+    <Project Path="src/Argenta.Data/Argenta.Data.csproj" />
+    <Project Path="src/Argenta.Modules.LibroCompras/Argenta.Modules.LibroCompras.csproj" />
+    <Project Path="src/Argenta.Wpf/Argenta.Wpf.csproj" />
+  </Folder>
+</Solution>
