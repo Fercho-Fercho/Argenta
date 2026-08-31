@@ -74,14 +74,22 @@ internal static class UtilPdfLibro
     /// <summary>
     /// Altura "segura" de una fila de una sola línea (7.5pt), con margen para
     /// que ocasionalmente una fila envuelva a 2 líneas (nombre de
-    /// cliente/proveedor largo) sin que la página se desborde. Medido
-    /// empíricamente: SIN envolver ninguna fila caben 55 filas de una sola
-    /// línea en el cuerpo disponible con estos márgenes (17.49cm / 55 ≈
-    /// 0.318cm/fila) — aquí se deja ~13% de colchón sobre esa base para los
-    /// envueltos ocasionales, bastante menos desperdicio que antes (0.41cm
-    /// dejaba ~30% de colchón y la hoja se veía con mucho espacio en blanco).
+    /// cliente/proveedor largo) sin que la página se desborde.
+    ///
+    /// Re-medido con un libro real de 120 facturas (Compras): con el valor
+    /// anterior (0.36cm, ~50 filas presupuestadas por hoja) MigraDoc
+    /// desbordaba cada sección a una SEGUNDA hoja física antes de llegar a
+    /// escribir la fila "Van" — la hoja de verdad aguantaba ~41 filas, no 50
+    /// (18.011cm de cuerpo disponible / 41 ≈ 0.439cm/fila real). Ahí es
+    /// donde aparecía el folio repetido y el "Van"/"Viene" descolocado que
+    /// reportó el usuario: cada "página" lógica de <see cref="Paginar{T}"/>
+    /// terminaba ocupando 2 páginas físicas, así que el corte manual ya no
+    /// coincidía con el corte real de MigraDoc. 0.5cm deja ~14% de colchón
+    /// sobre ese mínimo real (mismo criterio que antes: suficiente para
+    /// algún envuelto ocasional, sin desperdiciar tanto como para que la
+    /// hoja se vea con mucho espacio en blanco).
     /// </summary>
-    private const double AlturaFilaSeguraCm = 0.36;
+    private const double AlturaFilaSeguraCm = 0.5;
 
     public static Document CrearDocumento()
     {

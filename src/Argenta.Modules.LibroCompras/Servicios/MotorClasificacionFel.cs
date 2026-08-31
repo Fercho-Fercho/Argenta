@@ -20,9 +20,12 @@ namespace Argenta.Modules.LibroCompras.Servicios;
 /// 2) NoAfecta (Grupo B) → el Gran Total completo va a Exento; Compras,
 ///    Servicios e Iva quedan en 0.
 /// 3) Resta (Grupo C) → igual que Afecta, pero toda la fila en negativo.
-/// (Aparte / Grupo D: NABN y CIVA se manejan fuera de este motor, por el
-/// orquestador del módulo — igual que aquí, solo que el resultado nunca
-/// entra a los totales del libro.)
+/// 4) Aparte (Grupo D: NABN y CIVA) → el orquestador del módulo las separa
+///    ANTES de sumarlas a los totales del libro, pero el desglose por ítem
+///    (Compras/Servicios/Iva/Exento) se calcula IGUAL que Afecta — CIVA sí
+///    trae IVA real en sus ítems, y la sección aparte del libro (y el
+///    resumen "Exenciones de IVA (IVA DOCTO TIPO CIVA)" del Excel) necesitan
+///    ese Iva real, no el Gran Total completo aplastado en Exento.
 ///
 /// A diferencia de <see cref="MotorClasificacion"/> (Excel de la SAT), aquí
 /// NO se usa el catálogo de Proveedores para decidir Compra/Servicio (cada
@@ -41,6 +44,9 @@ public sealed class MotorClasificacionFel(IConversorMoneda conversor)
         var comportamiento = ComportamientoDteCatalogo.Obtener(factura.TipoDte);
         var esResta = comportamiento == ComportamientoDte.Resta;
         var esAfecta = comportamiento == ComportamientoDte.Afecta || esResta;
+        // Aparte (Grupo D: NABN/CIVA) también necesita el desglose real por
+        // ítem — solo NoAfecta (Grupo B) aplasta todo en Exento con Iva 0.
+        var calcularPorItem = comportamiento != ComportamientoDte.NoAfecta;
 
         var nitNormalizado = NitUtil.Normalizar(factura.NitEmisor);
         proveedoresRevisar.TryGetValue(nitNormalizado, out var proveedorRevisar);
@@ -71,7 +77,7 @@ public sealed class MotorClasificacionFel(IConversorMoneda conversor)
 
         decimal comprasRaw = 0m, serviciosRaw = 0m, exentoRaw = 0m, ivaRaw = 0m;
 
-        if (esAfecta)
+        if (calcularPorItem)
         {
             foreach (var item in factura.Items)
             {
@@ -108,7 +114,7 @@ public sealed class MotorClasificacionFel(IConversorMoneda conversor)
         }
         else
         {
-            // NoAfecta (Grupo B) y Aparte (Grupo D): el Gran Total completo va a Exento.
+            // Solo NoAfecta (Grupo B): el Gran Total completo va a Exento.
             exentoRaw = factura.GranTotal;
         }
 
