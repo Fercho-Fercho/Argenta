@@ -47,6 +47,10 @@ public sealed class LectorZipXmlFel
                 string.Join("\n", errores));
         }
 
+        // Muchos XML de la SAT traen las tildes y eñes como "?" (en el propio
+        // archivo, no es un problema de lectura): se reconstruyen aquí.
+        ReparadorTildesFel.Reparar(facturas);
+
         return facturas;
     }
 

@@ -166,6 +166,9 @@ public partial class GenerarLibroVentasFelViewModel : ObservableObject
                 _facturas = _lectorZip.Leer(flujo);
             }
 
+            // Si el Excel de consulta ya estaba cargado, sus nombres (con tildes) corrigen los "?" del XML.
+            ReparadorTildesFel.Reparar(_facturas, _estados);
+
             RutaArchivoZip = dialogo.FileName;
             MensajeEstado = $"{_facturas.Count} facturas XML leídas del ZIP.";
             DetectarCliente();
@@ -194,6 +197,8 @@ public partial class GenerarLibroVentasFelViewModel : ObservableObject
             {
                 _estados = _lectorEstados.Leer(flujo);
             }
+
+            ReparadorTildesFel.Reparar(_facturas, _estados);
 
             RutaArchivoEstados = dialogo.FileName;
             MensajeEstado = $"{_estados.Count} documentos leídos del Excel de consulta.";

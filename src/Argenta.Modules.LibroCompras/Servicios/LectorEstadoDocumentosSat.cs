@@ -17,6 +17,8 @@ public sealed class LectorEstadoDocumentosSat
     private const string ColNumeroAutorizacion = "Número de Autorización";
     private const string ColMarcaAnulado = "Marca de anulado";
     private const string ColEstado = "Estado";
+    private const string ColNombreEmisor = "Nombre completo del emisor";
+    private const string ColNombreReceptor = "Nombre completo del receptor";
 
     public IReadOnlyDictionary<string, EstadoDocumentoSat> Leer(Stream contenidoXls)
     {
@@ -28,6 +30,10 @@ public sealed class LectorEstadoDocumentosSat
         var ixAutorizacion = BuscarColumna(encabezado, ColNumeroAutorizacion);
         var ixMarca = BuscarColumna(encabezado, ColMarcaAnulado);
         var ixEstado = BuscarColumna(encabezado, ColEstado);
+
+        // Opcionales: solo para reparar tildes de los nombres que el XML trae con "?".
+        var ixNombreEmisor = BuscarColumnaOpcional(encabezado, ColNombreEmisor);
+        var ixNombreReceptor = BuscarColumnaOpcional(encabezado, ColNombreReceptor);
 
         var resultado = new Dictionary<string, EstadoDocumentoSat>(StringComparer.OrdinalIgnoreCase);
 
@@ -44,10 +50,23 @@ public sealed class LectorEstadoDocumentosSat
             var anulado = string.Equals(marca, "Si", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(estado, "Anulado", StringComparison.OrdinalIgnoreCase);
 
-            resultado[numeroAutorizacion] = new EstadoDocumentoSat(numeroAutorizacion, anulado, estado);
+            var nombreEmisor = ixNombreEmisor >= 0 ? LeerTexto(fila.GetCell(ixNombreEmisor)).Trim() : string.Empty;
+            var nombreReceptor = ixNombreReceptor >= 0 ? LeerTexto(fila.GetCell(ixNombreReceptor)).Trim() : string.Empty;
+
+            resultado[numeroAutorizacion] = new EstadoDocumentoSat(numeroAutorizacion, anulado, estado, nombreEmisor, nombreReceptor);
         }
 
         return resultado;
+    }
+
+    private static int BuscarColumnaOpcional(IRow encabezado, string nombre)
+    {
+        for (int c = 0; c < encabezado.LastCellNum; c++)
+        {
+            if (LeerTexto(encabezado.GetCell(c)).Trim().StartsWith(nombre, StringComparison.OrdinalIgnoreCase)) return c;
+        }
+
+        return -1;
     }
 
     private static int BuscarColumna(IRow encabezado, string nombre)

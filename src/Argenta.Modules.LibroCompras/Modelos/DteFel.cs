@@ -17,15 +17,15 @@ public sealed class DteFel
     public required DateTime FechaCertificacion { get; init; }
 
     public required string NitEmisor { get; init; }
-    public required string NombreEmisor { get; init; }
-    public required string NombreComercial { get; init; }
-    public required string DireccionEmisor { get; init; }
+    public required string NombreEmisor { get; set; }
+    public required string NombreComercial { get; set; }
+    public required string DireccionEmisor { get; set; }
 
     /// <summary>Código de establecimiento del emisor (atributo CodigoEstablecimiento de dte:Emisor). Solo relevante para el libro de Ventas, que se genera un archivo por establecimiento.</summary>
     public required string CodigoEstablecimiento { get; init; }
 
     public required string IdReceptor { get; init; }
-    public required string NombreReceptor { get; init; }
+    public required string NombreReceptor { get; set; }
 
     public required string Serie { get; init; }
     public required string NumeroDte { get; init; }
@@ -56,7 +56,7 @@ public sealed class ItemFel
     public required string BienOServicio { get; init; }
 
     public required decimal Cantidad { get; init; }
-    public required string Descripcion { get; init; }
+    public required string Descripcion { get; set; }
     public required decimal PrecioUnitario { get; init; }
 
     /// <summary>Total del item, IVA e impuestos especiales incluidos.</summary>
