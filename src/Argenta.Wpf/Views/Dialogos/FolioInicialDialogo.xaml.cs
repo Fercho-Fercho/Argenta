@@ -11,6 +11,7 @@ public partial class FolioInicialDialogo : Window
     public FolioInicialDialogo(IReadOnlyList<FolioInicialFila> filas)
     {
         InitializeComponent();
+        AjustePantalla.Ajustar(this);
         _filas = filas.ToList();
         ListaFilas.ItemsSource = _filas;
     }

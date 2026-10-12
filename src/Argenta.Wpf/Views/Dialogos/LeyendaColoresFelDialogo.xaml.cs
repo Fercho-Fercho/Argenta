@@ -7,6 +7,7 @@ public partial class LeyendaColoresFelDialogo : Window
     public LeyendaColoresFelDialogo()
     {
         InitializeComponent();
+        AjustePantalla.Ajustar(this);
     }
 
     private void Cerrar_Click(object sender, RoutedEventArgs e) => Close();

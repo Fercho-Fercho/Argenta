@@ -12,6 +12,7 @@ public partial class ClienteDialogo : Window
     public ClienteDialogo(Cliente cliente, bool esNuevo)
     {
         InitializeComponent();
+        AjustePantalla.Ajustar(this);
         _cliente = cliente;
         Title = esNuevo ? "Nuevo cliente" : "Editar cliente";
 

@@ -13,6 +13,7 @@ public partial class EstablecimientoDialogo : Window
     public EstablecimientoDialogo(Establecimiento establecimiento, bool esNuevo, IReadOnlyCollection<Establecimiento> existentes)
     {
         InitializeComponent();
+        AjustePantalla.Ajustar(this);
         _establecimiento = establecimiento;
         _existentes = existentes;
         Title = esNuevo ? "Nuevo establecimiento" : "Editar establecimiento";

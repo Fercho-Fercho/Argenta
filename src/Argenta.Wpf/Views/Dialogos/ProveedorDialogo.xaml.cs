@@ -13,6 +13,7 @@ public partial class ProveedorDialogo : Window
     public ProveedorDialogo(Proveedor proveedor, bool esNuevo, IReadOnlyCollection<Proveedor> existentes)
     {
         InitializeComponent();
+        AjustePantalla.Ajustar(this);
         _proveedor = proveedor;
         _existentes = existentes;
         Title = esNuevo ? "Nuevo proveedor" : "Editar proveedor";

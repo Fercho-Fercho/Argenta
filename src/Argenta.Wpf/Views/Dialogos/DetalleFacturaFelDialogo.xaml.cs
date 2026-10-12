@@ -9,6 +9,7 @@ public partial class DetalleFacturaFelDialogo : Window
     public DetalleFacturaFelDialogo(DteFel factura)
     {
         InitializeComponent();
+        AjustePantalla.Ajustar(this);
 
         TxtNombreEmisor.Text = factura.NombreEmisor;
         TxtNombreComercial.Text = factura.NombreComercial;

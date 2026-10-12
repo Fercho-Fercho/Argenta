@@ -11,6 +11,7 @@ public partial class TipoCambioDialogo : Window
     public TipoCambioDialogo(TipoCambio tipoCambio, bool esNuevo)
     {
         InitializeComponent();
+        AjustePantalla.Ajustar(this);
         _tipoCambio = tipoCambio;
         Title = esNuevo ? "Nuevo tipo de cambio" : "Editar tipo de cambio";
 
